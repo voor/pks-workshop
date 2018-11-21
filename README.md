@@ -163,3 +163,62 @@ Context set for cluster a.
 You can now switch between clusters by using:
 $kubectl config use-context <cluster-name>
 ```
+
+This segues into `kubectl` nicely...
+
+## kubectl CLI
+
+* Installation
+* Authentication, explain `~/.kube/config` 
+* Extremely brief here, because they don't know what to do with `kubectl` since they haven't really be introduced to Kubernetes yet.
+
+## Containers 101
+
+If people have docker on their machines, great, if they don't, even better:
+
+```
+kubectl run -i --tty node --image=node --restart=Never -- /bin/bash -il
+```
+
+This is more effective if they have `node` installed on their machines, since it's most likely not going to be version 11 (which is what `latest` is right now)
+
+In another terminal:
+
+```
+kubectl get po
+```
+
+## Kubernetes 101
+
+```
+kubectl describe po node
+```
+
+* Declarative, etc.
+* "Essentially an infinite loop"
+
+## Kubernetes Kinds
+
+Touch on the major ones.
+
+## Complex Application Deployments
+
+Deployment + Service + Ingress 
+
+* (optional segue into Istio to talk about alternatives to Ingress and straight Load Balancers)
+
+## Stateful Sets
+
+Move data layer into a stateful set (redis for example)
+
+## Batch Jobs
+
+Load data into redis through a batch job
+
+## Events, Logging
+
+Look at events associated, logging
+
+## Overflow: Metrics / Prometheus / Grafana
+
+If still time left, or at least discuss observability and scraping.
