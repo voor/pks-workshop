@@ -207,6 +207,10 @@ Deployment + Service + Ingress
 
 * (optional segue into Istio to talk about alternatives to Ingress and straight Load Balancers)
 
+## Events, Logging
+
+Look at events associated, logging
+
 ## Stateful Sets
 
 Move data layer into a stateful set (redis for example)
@@ -214,10 +218,6 @@ Move data layer into a stateful set (redis for example)
 ## Batch Jobs
 
 Load data into redis through a batch job
-
-## Events, Logging
-
-Look at events associated, logging
 
 ## Overflow: Metrics / Prometheus / Grafana
 
