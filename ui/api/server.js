@@ -11,4 +11,5 @@ routes(app);
 
 const server = app.listen(port, () => {
   console.log("API running on port.", server.address().port);
+  console.log("http://localhost:8080/api");
 });

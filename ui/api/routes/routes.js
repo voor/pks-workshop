@@ -1,11 +1,11 @@
 const faker = require("faker");
 
 const appRouter = app => {
-  app.get("/", (req, res) => {
+  app.get("/api/", (req, res) => {
     res.status(200).send({ message: "This is the base of the REST API" });
   });
 
-  app.get("/user/:id?", (req, res) => {
+  app.get("/api/user/:id?", (req, res) => {
     const id = parseInt(req.params.id);
 
     if (isFinite(id) && id > 0) {
@@ -22,7 +22,7 @@ const appRouter = app => {
     res.status(200).send({ data: [user] });
   });
 
-  app.get("/users/:num", (req, res) => {
+  app.get("/api/users/:num", (req, res) => {
     const users = [];
     const num = parseInt(req.params.num);
 
