@@ -2,6 +2,7 @@ FROM node
 
 ENV NODE_PORT 8080
 ENV NODE_HOST 0.0.0.0
+ENV NO_UPDATE_NOTIFIER true
 
 # Create app directory
 WORKDIR /usr/src/app/server
