@@ -211,6 +211,9 @@ Deployment + Service + Ingress
 
 Look at events associated, logging
 
+## Persistent Volumes and Persistent Volume Claims
+
+
 ## Stateful Sets
 
 Move data layer into a stateful set (redis for example)

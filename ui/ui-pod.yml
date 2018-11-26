@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: ui
+    deployment: pks-workshop
+  name: ui
+spec:
+  containers:
+  - image: voor/pks-workshop-ui:latest
+    name: fortune-ui
+    ports:
+    - containerPort: 80
+      protocol: TCP
+  - image: azwickey/fortune-backend-jee:latest
+    name: fortune-backend
+    ports:
+    - containerPort: 9080
+      protocol: TCP
+  - image: redis
+    name: redis
+    ports:
+    - containerPort: 6379
+      protocol: TCP
