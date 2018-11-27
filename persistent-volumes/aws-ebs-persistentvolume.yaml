@@ -2,7 +2,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: task-pv-volume
+  name: redis-data-volume
   labels:
     type: aws
     storage: small

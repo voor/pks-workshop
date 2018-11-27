@@ -222,15 +222,168 @@ Look at events associated, logging
 
 ## Persistent Volumes and Persistent Volume Claims
 
+```
+kubectl create -f persistent-volumes/aws-ebs-storageclass.yaml
+kubectl create ns redis
+kubectl create -n redis -f persistent-volumes/aws-ebs-pvc.yaml
+helm install --set persistence.existingClaim=redis-data --name redis --namespace redis stable/redis-ha 
+```
+
+Some errors to discuss:
+
+```
+Name:               punk-boxer-redis-ha-server
+Namespace:          default
+CreationTimestamp:  Tue, 27 Nov 2018 10:00:11 -0500
+Selector:           app=redis-ha,release=punk-boxer
+Labels:             app=redis-ha
+                    chart=redis-ha-3.0.1
+                    heritage=Tiller
+                    release=punk-boxer
+Annotations:        <none>
+Replicas:           3 desired | 1 total
+Update Strategy:    RollingUpdate
+Pods Status:        0 Running / 1 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:       app=redis-ha
+                release=punk-boxer
+  Annotations:  checksum/config=62c3ca5674b4a0a778bc343cf8080a0739d8092d8ca7e06816b885dba69dc53f
+  Init Containers:
+   config-init:
+    Image:      redis:4.0.11-alpine
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      sh
+    Args:
+      /readonly-config/init.sh
+    Environment:
+      POD_IP:   (v1:status.podIP)
+    Mounts:
+      /data from data (rw)
+      /readonly-config from config (ro)
+  Containers:
+   redis:
+    Image:      redis:4.0.11-alpine
+    Port:       6379/TCP
+    Host Port:  0/TCP
+    Command:
+      redis-server
+    Args:
+      /data/conf/redis.conf
+    Liveness:     exec [redis-cli ping] delay=15s timeout=1s period=5s #success=1 #failure=3
+    Readiness:    exec [redis-cli ping] delay=15s timeout=1s period=5s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /data from data (rw)
+   sentinel:
+    Image:      redis:4.0.11-alpine
+    Port:       26379/TCP
+    Host Port:  0/TCP
+    Command:
+      redis-sentinel
+    Args:
+      /data/conf/sentinel.conf
+    Liveness:     exec [redis-cli -p 26379 ping] delay=15s timeout=1s period=5s #success=1 #failure=3
+    Readiness:    exec [redis-cli -p 26379 ping] delay=15s timeout=1s period=5s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /data from data (rw)
+  Volumes:
+   config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      punk-boxer-redis-ha-configmap
+    Optional:  false
+Volume Claims:
+  Name:          data
+  StorageClass:  
+  Labels:        <none>
+  Annotations:   <none>
+  Capacity:      10Gi
+  Access Modes:  [ReadWriteOnce]
+Events:
+  Type    Reason            Age   From                    Message
+  ----    ------            ----  ----                    -------
+  Normal  SuccessfulCreate  6m    statefulset-controller  create Claim data-punk-boxer-redis-ha-server-0 Pod punk-boxer-redis-ha-server-0 in StatefulSet punk-boxer-redis-ha-server success
+  Normal  SuccessfulCreate  6m    statefulset-controller  create Pod punk-boxer-redis-ha-server-0 in StatefulSet punk-boxer-redis-ha-server successful
+
+```
+
+```
+Name:          data-punk-boxer-redis-ha-server-0
+Namespace:     default
+StorageClass:  
+Status:        Pending
+Volume:        
+Labels:        app=redis-ha
+               release=punk-boxer
+Annotations:   <none>
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      
+Access Modes:  
+Events:
+  Type    Reason         Age               From                         Message
+  ----    ------         ----              ----                         -------
+  Normal  FailedBinding  1m (x26 over 7m)  persistentvolume-controller  no persistent volumes available for this claim and no storage class is set
+```
 
 ## Stateful Sets
 
 Move data layer into a stateful set (redis for example)
 
+```
+kubectl exec -it redis-redis-ha-server-0 sh -n redis
+```
+
+```
+/data $ df -h | grep data
+/dev/xvdbe                9.7G     22.5M      9.7G   0% /data
+```
+
+```
+/data $ redis-cli -h redis-redis-ha.redis.svc.cluster.local
+redis-redis-ha.redis.svc.cluster.local:6379> incr mycounter
+(error) READONLY You can't write against a read only slave.
+```
+
+```
+/data $ redis-cli -h redis-redis-ha-server-0.redis-redis-ha.redis.svc.cluster.local
+redis-redis-ha-server-0.redis-redis-ha.redis.svc.cluster.local:6379> incr mycounter
+(integer) 1
+```
+
 ## Batch Jobs
 
 Load data into redis through a batch job
 
+```
+kubectl create configmap data-config -n redis --from-file=data.txt=data.txt
+kubectl describe configmap data-config -n redis
+```
+
+Little trick you learn over the years:
+
+```
+kubectl create configmap data-config -n redis --from-file=data.txt=data.txt -o yaml --dry-run | kubectl replace -f -
+```
+
 ## Overflow: Metrics / Prometheus / Grafana
 
 If still time left, or at least discuss observability and scraping.
+
+## Advanced Topics: Helm / Istio / Knative (Riff, PFS)
+
+Did you now we did stuff to this cluster before the workshop?
+
+ * Added a Helm Tiller (since Ingress and Redis was installed as charts)
+ ```
+kubectl -n kube-system create serviceaccount tiller
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+mkdir -p ~/bin && pushd ~/bin && curl -LsS https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz | tar xz linux-amd64/helm --strip-components 1 && chmod +x helm && popd
+~/bin/helm init --service-account=tiller
+```
+ * Added an Ingress Controller and provided a default SSL Cert
+ ```
+# Make sure to modify the ACM cert first!
+helm install stable/nginx-ingress --name nginx-ingress --namespace ingress --values ingress/ingress-values.yml
+```

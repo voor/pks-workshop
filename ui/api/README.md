@@ -16,6 +16,15 @@ npm install
 npm start
 ```
 
+If you want to use the option redis component, make sure you have redis running propery:
+
+```
+docker run --rm -d --name redis -p 6379:6379 redis
+# Also add the key it'll look for
+echo "SET messagekey \"I am in a docker container please send help\"" | nc -v localhost 6379
+```
+
+
 ## Building
 
 Dockerfile provided one directory up as `api.Dockerfile`.

@@ -8,9 +8,9 @@ metadata:
     storage: small
 spec:
   volumes:
-    - name: task-pv-storage
+    - name: redis-data-storage
       persistentVolumeClaim:
-        claimName: task-pv-claim
+        claimName: redis-data
   containers:
     - name: task-pv-container
       image: nginx
@@ -19,4 +19,4 @@ spec:
           name: "http-server"
       volumeMounts:
         - mountPath: "/hello/from/aws/ebs/"
-          name: task-pv-storage
+          name: redis-data-storage

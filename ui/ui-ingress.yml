@@ -2,6 +2,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: ui-ing
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kuberentes.io/ingress.class: nginx
 spec:
   tls:
     - hosts:

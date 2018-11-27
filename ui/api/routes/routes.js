@@ -1,8 +1,26 @@
 const faker = require("faker");
 
+const redis = require("redis");
+const { promisify } = require("util");
+
+const { REDIS_HOST } = process.env;
+
 const appRouter = app => {
-  app.get("/api/", (req, res) => {
-    res.status(200).send({ message: "This is the base of the REST API" });
+  app.get("/api/", async (req, res) => {
+    try {
+      const client = redis.createClient({
+        host: REDIS_HOST,
+        retry_strategy: options => new Error("Fail")
+      });
+
+      const getAsync = promisify(client.get).bind(client);
+      const message = await getAsync("messagekey");
+
+      res.status(200).send({ message });
+    } catch (err) {
+      console.error(err);
+      res.status(200).send({ message: "No redis" });
+    }
   });
 
   app.get("/api/user/:id?", (req, res) => {

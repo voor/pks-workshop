@@ -1,0 +1,30 @@
+controller:
+  config:
+    client-body-buffer-size: 32M
+    hsts: "true"
+    proxy-body-size: 1G
+    proxy-buffering: "off"
+    proxy-read-timeout: "600"
+    proxy-send-timeout: "600"
+    server-tokens: "false"
+    ssl-redirect: "true"
+    force-ssl-redirect: "true"
+    upstream-keepalive-connections: "50"
+    use-proxy-protocol: "false"
+
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "3600"
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
+      service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "PKS=Workshop,Sample=Tag"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:CHANGEME:certificate/UUID"
+    targetPorts:
+        http: http
+        https: http
+
+
+
+
+

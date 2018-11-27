@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: redis-batch
+spec:
+  template:
+    spec:
+      containers:
+        - name: load
+          image: redis
+          command: ["/bin/sh"]
+          args:
+            ["-c", "sleep 30 && cat /tmp/data/data.txt | redis-cli --pipe -h $(REDIS_HOST)"]
+          env:
+            - name: REDIS_HOST
+              value: "redis-redis-ha-server-0.redis-redis-ha"
+          volumeMounts:
+            - name: data-volume
+              mountPath: /tmp/data
+      restartPolicy: Never
+      volumes:
+        - name: data-volume
+          configMap:
+            name: data-config
+            items:
+              - key: data.txt
+                path: data.txt
+  backoffLimit: 4
