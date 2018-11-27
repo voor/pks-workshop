@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-deploy-svc
+  labels:
+    app: ui-deploy
+    group: pks-workshop
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: ui-deploy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-deploy-svc
+  labels:
+    app: backend-deploy
+    group: pks-workshop
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: backend-deploy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-deploy
+  labels:
+    app: ui-deploy
+    group: pks-workshop
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ui-deploy
+  template:
+    metadata:
+      labels:
+        app: ui-deploy
+    spec:
+      containers:
+      - name: ui
+        image: voor/pks-workshop-ui:latest
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deploy
+  labels:
+    app: backend-deploy
+    group: pks-workshop
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-deploy
+  template:
+    metadata:
+      labels:
+        app: backend-deploy
+    spec:
+      containers:
+      - name: backend
+        image: voor/pks-workshop-api:latest
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /api/
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /api/
+            port: http

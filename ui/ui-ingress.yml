@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ui-ing
+spec:
+  tls:
+    - hosts:
+        - www.pivdevops.com # CHANGEME
+  rules:
+    - host: www.pivdevops.com # CHANGEME
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: ui-deploy-svc
+              servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backend-ing
+spec:
+  tls:
+    - hosts:
+        - www.pivdevops.com # CHANGEME
+  rules:
+    - host: www.pivdevops.com # CHANGEME
+      http:
+        paths:
+          - path: /api
+            backend:
+              serviceName: backend-deploy-svc
+              servicePort: 80
