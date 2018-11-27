@@ -43,6 +43,8 @@ spec:
       env:
         - name: NODE_PORT
           value: "8080"
+        - name: REDIS_HOST
+          value: "localhost"
     - image: redis
       name: redis
       ports:

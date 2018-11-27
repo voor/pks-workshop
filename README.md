@@ -182,7 +182,7 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 If people have docker on their machines, great, if they don't, even better:
 
 ```
-kubectl run -i --tty node --image=node --restart=Never -- /bin/bash -il
+kubectl -n MYNAMESPACE run -i --tty node --image=node --restart=Never -- /bin/bash -il
 ```
 
 This is more effective if they have `node` installed on their machines, since it's most likely not going to be version 11 (which is what `latest` is right now)
@@ -190,7 +190,7 @@ This is more effective if they have `node` installed on their machines, since it
 In another terminal:
 
 ```
-kubectl get po
+kubectl -n MYNAMESPACE get po
 ```
 
 ## Kubernetes 101
@@ -201,6 +201,7 @@ kubectl describe po node
 
 * Declarative, etc.
 * "Essentially an infinite loop"
+* `kubectl proxy` and [Dashboard](http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview?namespace=default)
 
 ## Kubernetes Kinds
 
@@ -208,16 +209,27 @@ Touch on the major ones.
 
 ## Complex Application Deployments
 
+### Simple POD App
+
+This is bad practice, but it's a building block to better understand how kubernetes works.
+
 ```
-kubectl create -f ui-pod.yml
-kubectl describe po ui
-kubectl logs ui # ERROR!
-kubectl logs ui ui
-kubectl logs ui backend
-kubectl exec -it ui -- /bin/bash
+kubectl create ns MYNAMESPACE 
+kubectl -n MYNAMESPACE create -f ui-pod.yml
+kubectl -n MYNAMESPACE describe po ui
+kubectl -n MYNAMESPACE logs ui # ERROR!
+kubectl -n MYNAMESPACE logs ui ui
+kubectl -n MYNAMESPACE logs ui backend
+kubectl -n MYNAMESPACE exec -it ui -- /bin/bash
 ```
 
-Deployment + Service + Ingress 
+### Deployment + Service + Ingress 
+
+```
+kubectl -n MYNAMESPACE create -f ui-deploy.yml
+# Change the hostname so you don't stomp on each other!
+kubectl -n MYNAMESPACE create -f ui-ingress.yml
+```
 
 * (optional segue into Istio to talk about alternatives to Ingress and straight Load Balancers)
 

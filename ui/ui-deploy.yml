@@ -48,20 +48,20 @@ spec:
         app: ui-deploy
     spec:
       containers:
-      - name: ui
-        image: voor/pks-workshop-ui:latest
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /
-            port: http
+        - name: ui
+          image: voor/pks-workshop-ui:latest
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -81,17 +81,22 @@ spec:
         app: backend-deploy
     spec:
       containers:
-      - name: backend
-        image: voor/pks-workshop-api:latest
-        ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /api/
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /api/
-            port: http
+        - name: backend
+          image: voor/pks-workshop-api:latest
+          env:
+            - name: NODE_PORT
+              value: "8080"
+            - name: REDIS_HOST
+              value: "redis-redis-ha.redis.svc.cluster.local"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/
+              port: http

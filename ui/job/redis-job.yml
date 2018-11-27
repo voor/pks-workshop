@@ -13,7 +13,7 @@ spec:
             ["-c", "sleep 30 && cat /tmp/data/data.txt | redis-cli --pipe -h $(REDIS_HOST)"]
           env:
             - name: REDIS_HOST
-              value: "redis-redis-ha-server-0.redis-redis-ha"
+              value: "redis-redis-ha-server-0.redis-redis-ha.redis.svc.cluster.local"
           volumeMounts:
             - name: data-volume
               mountPath: /tmp/data

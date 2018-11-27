@@ -1,3 +1,4 @@
 SET messagekey "Hello from PKS!"
 SET anotherkey "More words!"
 INCR jobruns
+SET words "In a string!"
