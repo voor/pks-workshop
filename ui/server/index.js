@@ -3,7 +3,7 @@ const proxy = require("http-proxy-middleware");
 const path = require("path");
 const port = process.env.NODE_PORT || 8080;
 const app = express();
-const { PROXY_HOST } = process.env;
+const { PROXY_HOST, PROXY_LOG_LEVEL } = process.env;
 
 const route = "/api";
 
@@ -19,7 +19,12 @@ app.get("*", function(request, response) {
 });
 
 if (PROXY_HOST) {
-  app.use(route, proxy({ target: PROXY_HOST, changeOrigin: true }));
+  const proxyOptions = {
+    target: PROXY_HOST,
+    changeOrigin: true,
+    logLevel: PROXY_LOG_LEVEL
+  };
+  app.use(route, proxy(proxyOptions));
 }
 
 const server = app.listen(port, () => {

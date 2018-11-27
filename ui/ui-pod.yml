@@ -1,4 +1,24 @@
 apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ui
+    deployment: pks-workshop
+  name: ui-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+      name: ui
+    - port: 8080
+      name: backend
+    - port: 6379
+      name: redis
+  type: LoadBalancer
+  selector:
+    app: ui
+---
+apiVersion: v1
 kind: Pod
 metadata:
   labels:
@@ -7,18 +27,23 @@ metadata:
   name: ui
 spec:
   containers:
-  - image: voor/pks-workshop-ui:latest
-    name: fortune-ui
-    ports:
-    - containerPort: 80
-      protocol: TCP
-  - image: azwickey/fortune-backend-jee:latest
-    name: fortune-backend
-    ports:
-    - containerPort: 9080
-      protocol: TCP
-  - image: redis
-    name: redis
-    ports:
-    - containerPort: 6379
-      protocol: TCP
+    - image: voor/pks-workshop-ui:latest
+      name: ui
+      ports:
+        - containerPort: 3000
+      env:
+        - name: PROXY_HOST
+          value: "http://localhost:8080/api/"
+        - name: NODE_PORT
+          value: "3000"
+    - image: voor/pks-workshop-api:latest
+      name: backend
+      ports:
+        - containerPort: 8080
+      env:
+        - name: NODE_PORT
+          value: "8080"
+    - image: redis
+      name: redis
+      ports:
+        - containerPort: 6379

@@ -8,14 +8,15 @@ ENV NO_UPDATE_NOTIFIER true
 WORKDIR /usr/src/app/server
 
 # Entrypoint allows adding in ENV variables to the run command.
-COPY ./api/package*.json /usr/src/app/server/
+COPY ./api/package*.json ./
 COPY ./api/entrypoint.sh .
-COPY ./api/server.js .
 
 RUN chmod +x /usr/src/app/server/entrypoint.sh
 
 # Very basic server for serving up static assets.
 RUN npm install --no-color --production --quiet
+
+COPY ./api ./
 
 RUN groupadd -r express && useradd -r -g express express
 

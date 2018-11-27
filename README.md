@@ -203,6 +203,15 @@ Touch on the major ones.
 
 ## Complex Application Deployments
 
+```
+kubectl create -f ui-pod.yml
+kubectl describe po ui
+kubectl logs ui # ERROR!
+kubectl logs ui ui
+kubectl logs ui backend
+kubectl exec -it ui -- /bin/bash
+```
+
 Deployment + Service + Ingress 
 
 * (optional segue into Istio to talk about alternatives to Ingress and straight Load Balancers)
