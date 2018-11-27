@@ -169,6 +169,11 @@ This segues into `kubectl` nicely...
 ## kubectl CLI
 
 * Installation
+```
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+```
 * Authentication, explain `~/.kube/config` 
 * Extremely brief here, because they don't know what to do with `kubectl` since they haven't really be introduced to Kubernetes yet.
 
