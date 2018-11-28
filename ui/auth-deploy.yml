@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  labels:
+    app: auth
+    group: pks-workshop
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: auth
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  labels:
+    app: auth
+    group: pks-workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: voor/pks-workshop-auth:latest
+          env:
+            - name: NODE_PORT
+              value: "8080"
+            - name: OPENID_DISCOVERY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_DISCOVERY_URL
+            - name: OPENID_DISCOVERY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_DISCOVERY_CLIENT_ID
+            - name: OPENID_DISCOVERY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_DISCOVERY_CLIENT_SECRET
+            - name: OPENID_REDIRECT_URI
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_REDIRECT_URI
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /auth/login
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /auth/login
+              port: http
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: auth-ing
+spec:
+  tls:
+    - hosts:
+        - www.pivdevops.com # CHANGEME
+  rules:
+    - host: www.pivdevops.com # CHANGEME
+      http:
+        paths:
+          - path: /auth
+            backend:
+              serviceName: auth-svc
+              servicePort: 80
