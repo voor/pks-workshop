@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon -r dotenv/config index.js",
+    "debug": "node -r dotenv/config --nolazy --inspect-brk=9229 index.js"
   },
   "author": "Robert Van Voorhees",
   "license": "MIT",
@@ -18,6 +19,7 @@
     "openid-client": "^2.4.5"
   },
   "devDependencies": {
+    "dotenv": "^6.1.0",
     "nodemon": "^1.18.7"
   }
 }

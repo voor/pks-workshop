@@ -57,15 +57,13 @@ const auth = async () => {
   });
 
   app.use("/auth/callback", (req, res, next) => {
-    const { state, response_type } = req.session[authorizationRequestState];
+    console.log("In here");
     client
-      .authorizationCallback(OPENID_REDIRECT_URI, request.query, {
-        state,
-        response_type
-      }) // => Promise
+      .authorizationCallback(OPENID_REDIRECT_URI, req.query) // => Promise
       .then(function(tokenSet) {
         console.log("received and validated tokens %j", tokenSet);
         console.log("validated id_token claims %j", tokenSet.claims);
+        res.send(JSON.stringify(tokenSet));
       });
   });
 
