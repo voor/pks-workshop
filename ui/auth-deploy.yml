@@ -22,7 +22,7 @@ metadata:
     app: auth
     group: pks-workshop
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: auth
@@ -37,34 +37,52 @@ spec:
           env:
             - name: NODE_PORT
               value: "8080"
-            - name: REDIS_HOST
-              value: "redis-redis-ha.redis.svc.cluster.local"
             - name: OPENID_DISCOVERY_URL
               valueFrom:
-              secretKeyRef:
-                name: auth-secret
-                key: OPENID_DISCOVERY_URL
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_DISCOVERY_URL
             - name: OPENID_DISCOVERY_CLIENT_ID
               valueFrom:
-              secretKeyRef:
-                name: auth-secret
-                key: OPENID_DISCOVERY_CLIENT_ID
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_DISCOVERY_CLIENT_ID
             - name: OPENID_DISCOVERY_CLIENT_SECRET
               valueFrom:
-              secretKeyRef:
-                name: auth-secret
-                key: OPENID_DISCOVERY_CLIENT_SECRET
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_DISCOVERY_CLIENT_SECRET
+            - name: OPENID_REDIRECT_URI
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: OPENID_REDIRECT_URI
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /auth/login
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /auth/login
               port: http
 ---
-
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: auth-ing
+spec:
+  tls:
+    - hosts:
+        - www.pivdevops.com # CHANGEME
+  rules:
+    - host: www.pivdevops.com # CHANGEME
+      http:
+        paths:
+          - path: /auth
+            backend:
+              serviceName: auth-svc
+              servicePort: 80
