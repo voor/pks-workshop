@@ -1,39 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { Issuer } = require("openid-client");
-const redis = require("redis");
-const session = require("express-session");
-const RedisStore = require("connect-redis")(session);
 
 const port = process.env.NODE_PORT || 8080;
 const {
   OPENID_DISCOVERY_URL,
   OPENID_DISCOVERY_CLIENT_ID,
   OPENID_DISCOVERY_CLIENT_SECRET,
-  OPENID_REDIRECT_URI,
-  REDIS_SESSION_SECRET,
-  REDIS_HOST
+  OPENID_REDIRECT_URI
 } = process.env;
 
 const app = express();
 
-const client = redis.createClient({
-  host: REDIS_HOST,
-  retry_strategy: options => new Error("Fail")
-});
-
 app.disable("x-powered-by");
 app.use(bodyParser.urlencoded({ extended: false }));
-
-const redisStoreOptions = { client };
-
-app.use(
-  session({
-    store: new RedisStore(redisStoreOptions),
-    secret: REDIS_SESSION_SECRET,
-    resave: false
-  })
-);
 
 const auth = async () => {
   const issuer = await Issuer.discover(OPENID_DISCOVERY_URL);
