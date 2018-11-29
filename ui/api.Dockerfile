@@ -1,4 +1,4 @@
-FROM node
+FROM node:slim
 
 ENV NODE_PORT 8080
 ENV NODE_HOST 0.0.0.0

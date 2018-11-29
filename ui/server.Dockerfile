@@ -1,4 +1,4 @@
-FROM node as ui
+FROM node:slim as ui
 
 ENV NODE_ENV production
 ENV NO_UPDATE_NOTIFIER true
@@ -11,7 +11,7 @@ COPY ./my-app/. ./
 
 RUN npm run build
 
-FROM node
+FROM node:slim
 
 ENV NODE_ENV production
 ENV NODE_PORT 8080

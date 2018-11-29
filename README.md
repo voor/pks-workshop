@@ -378,6 +378,10 @@ kubectl create configmap data-config -n redis --from-file=data.txt=data.txt
 kubectl describe configmap data-config -n redis
 ```
 
+```
+kubectl create -n redis -f redis-job.yml
+```
+
 Little trick you learn over the years:
 
 ```
