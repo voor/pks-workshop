@@ -6,6 +6,7 @@ metadata:
   labels:
     type: aws
     storage: small
+    name: redis-data-volume
 spec:
   storageClassName: aws
   capacity:

@@ -8,6 +8,9 @@ metadata:
     storage: small
 spec:
   storageClassName: aws
+  # selector:
+  #   matchLabels:
+  #     name: redis-data-volume
   accessModes:
     - ReadWriteOnce
   resources:
