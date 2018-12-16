@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: ui-ing
+  namespace: MYNAMESPACE # CHANGEME
   annotations:
     ingress.kubernetes.io/force-ssl-redirect: "true"
     kuberentes.io/ingress.class: nginx
@@ -22,6 +23,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: backend-ing
+  namespace: MYNAMESPACE # CHANGEME
   annotations:
     ingress.kubernetes.io/force-ssl-redirect: "true"
     kuberentes.io/ingress.class: nginx

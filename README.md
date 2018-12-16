@@ -217,10 +217,10 @@ This is bad practice, but it's a building block to better understand how kuberne
 kubectl create ns MYNAMESPACE 
 kubectl -n MYNAMESPACE create -f ui-pod.yml
 kubectl -n MYNAMESPACE describe po ui
-kubectl -n MYNAMESPACE logs ui # ERROR!
-kubectl -n MYNAMESPACE logs ui ui
-kubectl -n MYNAMESPACE logs ui backend
-kubectl -n MYNAMESPACE exec -it ui -- /bin/bash
+kubectl -n MYNAMESPACE logs ui-pod # ERROR!
+kubectl -n MYNAMESPACE logs ui-pod ui
+kubectl -n MYNAMESPACE logs ui-pod backend
+kubectl -n MYNAMESPACE exec -it ui-pod -- /bin/bash
 ```
 
 ### Deployment + Service + Ingress 

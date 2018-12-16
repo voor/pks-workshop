@@ -1,9 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ui-deploy-svc
+  name: ui
+  namespace: MYNAMESPACE # CHANGEME
   labels:
-    app: ui-deploy
+    app: ui
     group: pks-workshop
 spec:
   type: ClusterIP
@@ -12,14 +13,15 @@ spec:
       targetPort: 8080
       name: http
   selector:
-    app: ui-deploy
+    app: ui
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-deploy-svc
+  name: api
+  namespace: MYNAMESPACE # CHANGEME
   labels:
-    app: backend-deploy
+    app: api
     group: pks-workshop
 spec:
   type: ClusterIP
@@ -28,24 +30,25 @@ spec:
       targetPort: 8080
       name: http
   selector:
-    app: backend-deploy
+    app: api
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ui-deploy
+  name: ui
+  namespace: MYNAMESPACE # CHANGEME
   labels:
-    app: ui-deploy
+    app: ui
     group: pks-workshop
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: ui-deploy
+      app: ui
   template:
     metadata:
       labels:
-        app: ui-deploy
+        app: ui
     spec:
       containers:
         - name: ui
@@ -66,19 +69,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deploy
+  name: api
+  namespace: MYNAMESPACE # CHANGEME
   labels:
-    app: backend-deploy
+    app: api
     group: pks-workshop
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backend-deploy
+      app: api
   template:
     metadata:
       labels:
-        app: backend-deploy
+        app: api
     spec:
       containers:
         - name: backend

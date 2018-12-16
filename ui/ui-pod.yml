@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ui-pod-svc
+  namespace: MYNAMESPACE # CHANGEME
   labels:
     app: ui-pod
     group: pks-workshop
