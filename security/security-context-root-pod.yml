@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-root-pod-no-sa
+  namespace: context-testing
+spec:
+  securityContext:
+    runAsUser: 0
+  containers:
+  - name: whatever
+    image: busybox
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - mountPath: /var/vcap
+      name: vcap-volume
+  volumes:
+  - name: vcap-volume
+    hostPath:
+      path: /var/vcap/
+      type: Directory
