@@ -1,6 +1,6 @@
 controller:
   config:
-    client-body-buffer-size: 32M
+    client-body-buffer-size: "32M"
     hsts: "true"
     proxy-body-size: 1G
     proxy-buffering: "off"
@@ -11,11 +11,6 @@ controller:
     force-ssl-redirect: "true"
     upstream-keepalive-connections: "50"
     use-proxy-protocol: "false"
-
-    daemonset:
-      hostPorts:
-        http: 8080
-        https: 8443
 
   service:
     annotations:

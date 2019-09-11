@@ -21,25 +21,27 @@ metadata:
   name: context-testing-rolebinding
   namespace: context-testing
 subjects:
-- kind: ServiceAccount
-  name: context-testing-sa
-  namespace: context-testing
+  - kind: ServiceAccount
+    name: context-testing-sa
+    namespace: context-testing
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: context-testing-role
 ---
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: context-testing-psp
   namespace: context-testing
 spec:
   allowPrivilegeEscalation: false
+  allowedHostPaths:
+    - "/var/vcap"
   fsGroup:
     rule: RunAsAny
   requiredDropCapabilities:
-  - ALL
+    - ALL
   runAsUser:
     rule: RunAsAny
   seLinux:
@@ -47,4 +49,4 @@ spec:
   supplementalGroups:
     rule: RunAsAny
   volumes:
-  - '*'
+    - "hostPath"
